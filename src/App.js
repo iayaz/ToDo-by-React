@@ -1,24 +1,68 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import { useState } from "react";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import ToDoCard from "./components/ToDoCard";
 
 function App() {
+  const [text, setText] = useState("");
+  const [tasks, setTasks] = useState([]);
+
+  const updateText = (e) => {
+    setText(e.target.value);
+  };
+
+  const addTasks = () => {
+    if (text.trim() !== "") {
+      setTasks((prevTasks) => [...prevTasks, text]);
+      setText("");
+    }
+  };
+
+  const deleteTasks = (index) => {
+    const updatedTasks = [...tasks];
+    updatedTasks.splice(index, 1);
+    setTasks(updatedTasks);
+  };
+
+  const editTask = (index, newText) => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index] = newText;
+    setTasks(updatedTasks);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <div>
+          <input
+            type="text"
+            style={{ marginBottom: "10px", marginRight: "5px" }}
+            value={text}
+            onChange={updateText}
+          />
+          <button onClick={addTasks}> Add tasks </button>
+        </div>
+        {tasks.map((value, index) => {
+          return (
+            <ToDoCard
+              key={index}
+              list={value}
+              onDelete={() => deleteTasks(index)}
+              onEdit={(newText) => editTask(index, newText)}
+            />
+          );
+        })}
+      </div>
+    </>
   );
 }
 
